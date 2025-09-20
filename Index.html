@@ -1,0 +1,52 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Prakash AI Bot</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
+    h2 { color: #333; }
+    textarea { width: 100%; padding: 10px; font-size: 16px; }
+    button { padding: 10px 20px; margin-top: 10px; font-size: 16px; }
+    pre { background: #fff; padding: 10px; border: 1px solid #ccc; margin-top: 20px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h2>Ask Something:</h2>
+  <textarea id="prompt" rows="4" placeholder="Type your question..."></textarea><br>
+  <button onclick="ask()">Send</button>
+  <pre id="response">Response will appear here...</pre>
+
+  <script>
+    async function ask() {
+      const prompt = document.getElementById("prompt").value;
+      const responseBox = document.getElementById("response");
+      responseBox.innerText = "Thinking...";
+
+      try {
+        const res = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer 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"
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            messages: [{ role: "user", content: prompt }]
+          })
+        });
+
+        const data = await res.json();
+        if (data.choices && data.choices[0] && data.choices[0].message) {
+          responseBox.innerText = data.choices[0].message.content;
+        } else {
+          responseBox.innerText = "Invalid response!";
+        }
+      } catch (error) {
+        responseBox.innerText = "Error: " + error.message;
+      }
+    }
+  </script>
+</body>
+</html>
+```
